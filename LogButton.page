@@ -1,0 +1,15 @@
+Icon="icons/page_white_text.png"
+Menu="Buttons"
+Title="Log"
+---
+<script>
+function LogButton() {
+  var title="<?=$var['NAME'];?> syslog";
+  var url="/logging.htm?title=" + title + "&cmd=/usr/bin/tail -f /var/log/syslog&forkCmd=Start";
+  var width=((screen.width*2)/3)||0;
+  var height=((screen.height*2)/3)||0;
+  var features="resizeable=yes,scrollbars=yes,width=" + width + ",height=" + height;
+  var myWindow=window.open(url, title.replace(/ /g, "_"), features);
+  myWindow.focus();
+}
+</script>

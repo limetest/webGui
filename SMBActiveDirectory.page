@@ -1,0 +1,57 @@
+Cond="($var['shareSMBEnabled'] == 'ads')"
+Icon="icons/windows-icon.png"
+Menu="SMB:20"
+Title="Active Directory Settings"
+---
+<form markdown="1" name="JoinOps" method="POST" action="/update.htm" target="progressFrame">
+
+AD join status:
+
+:  <?=$var['joinStatus'];?>&nbsp;
+
+AD domain name (FQDN):
+
+:  <input type="text" name="DOMAIN" maxlength="80" value="<?=$var['DOMAIN'];?>">
+
+AD short domain name:
+
+:  <input type="text" name="DOMAIN_SHORT" maxlength="40" value="<?=$var['DOMAIN_SHORT'];?>">
+
+AD account login:
+
+:  <input type="text" name="DOMAIN_LOGIN" maxlength="40" value="<?=$var['DOMAIN_LOGIN'];?>">
+
+AD account password:
+
+:  <input type="password" name="DOMAIN_PASSWD" maxlength="40" value="<?=$var['DOMAIN_PASSWD'];?>">
+
+&nbsp;
+
+:  <? if ($var['joinStatus']=="Joined"): ?>
+   <input type="submit" name="cmdJoinDomain" value="Join" disabled>
+   <input type="submit" name="cmdLeaveDomain" value="Leave">
+   <? else: ?>
+   <input type="submit" name="cmdJoinDomain" value="Join">
+   <input type="submit" name="cmdLeaveDomain" value="Leave" disabled>
+   <? endif; ?>
+
+</form>
+
+<hr>
+
+<form markdown="1" name="shareOwnership" method="POST" action="/update.htm" target="progressFrame">
+
+AD initial owner:
+
+:  <input type="text" name="shareInitialOwner" maxlength="40" value="<?=$var['shareInitialOwner'];?>">
+
+AD initial group:
+
+:  <input type="text" name="shareInitialGroup" maxlength="40" value="<?=$var['shareInitialGroup'];?>">
+
+&nbsp;
+
+:  <input type="submit" name="changeShare" value="Apply">
+   <button type="button" onClick="done();">Done</button>
+
+</form>

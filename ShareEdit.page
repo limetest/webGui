@@ -1,0 +1,113 @@
+Icon="icons/sharesettings.png"
+Menu="Share:1"
+Title="Share Settings"
+---
+<?
+if ($name == "") {
+  /* default values when adding new share */
+  $share = array( "nameOrig" =>      "",
+                  "name" =>          "",
+                  "comment" =>       "",
+                  "allocator" =>     "highwater",
+                  "floor" =>         "0",
+                  "splitLevel" =>    "",
+                  "include" =>       "",
+                  "exclude" =>       "",
+                  "useCache" =>      "no");
+}
+else if (array_key_exists( $name, $shares)) {
+  /* edit existing share */
+  $share = $shares[$name];
+}
+else {
+  /* handle share deleted case */
+  echo "<p class='notice'>Share $name has been deleted.</p>";
+  echo "<p class='notice'><button type='button' onClick='done();'>OK</button></p>";
+  return;
+}
+  
+/* check for empty share */
+function shareEmpty($name) {
+  return (($files = @scandir('/mnt/user/' . $name)) && (count($files) <= 2));
+}
+?>
+<form markdown="1" method="POST" action="/update.htm" target="progressFrame">
+
+Name:
+
+:   <input type="text" name="shareName" maxlength="40" value="<?=$share['name'];?>">
+
+Comments:
+
+:   <input type="text" name="shareComment" maxlength="256" value="<?=$share['comment'];?>">
+
+Allocation method:
+
+:   <select name="shareAllocator" size="1">
+    <?=mk_option($share['allocator'], "highwater", "High-water");?>
+    <?=mk_option($share['allocator'], "mostfree", "Most-free");?>
+    <?=mk_option($share['allocator'], "fillup", "Fill-up");?>
+    </select>
+
+Min. free space:
+
+:   <input type="text" name="shareFloor" maxlength="16" value="<?=$share['floor'];?>">
+
+Split level:
+
+:   <input type="text" name="shareSplitLevel" maxlength="256" value="<?=$share['splitLevel'];?>">
+
+Included disk(s):
+
+:   <input type="text" name="shareInclude" maxlength="256" value="<?=$share['include'];?>">
+
+Excluded disk(s):
+
+:   <input type="text" name="shareExclude" maxlength="256" value="<?=$share['exclude'];?>">
+
+<? if ($var['cacheActive']=="yes"): ?>
+
+Use cache disk:
+
+:   <select name="shareUseCache" size="1">
+    <?=mk_option($share['useCache'], "no", "No");?>
+    <?=mk_option($share['useCache'], "yes", "Yes");?>
+    <?=mk_option($share['useCache'], "only", "Only");?>
+    </select>
+
+<? endif; ?>
+
+<? if ($share['name'] == ""): ?>
+
+&nbsp;
+
+:   <input type="submit" name="cmdEditShare" value="Add Share">
+    <button type="button" onClick="done();">Cancel</button>
+
+<? elseif (shareEmpty($share['name'])): ?>
+
+Share empty?
+
+:   Yes
+
+Delete<input type="checkbox" name="confirmDelete" onChange="chkDelete(this.form, this.form.cmdEditShare);">
+
+:   <input type="hidden" name="shareNameOrig" value="<?=$share['nameOrig'];?>">
+    <input type="submit" name="cmdEditShare" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+<? else: ?>
+
+Share empty?
+
+:   No
+
+&nbsp;
+
+:   <input type="hidden" name="shareNameOrig" value="<?=$share['nameOrig'];?>">
+    <input type="submit" name="cmdEditShare" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+<? endif; ?>
+
+</form>

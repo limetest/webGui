@@ -1,0 +1,18 @@
+**Copyright 2005-2014 Lime Technology.**
+
+The Software comprising the unRAID webGui, which is all files within this repository except for
+files listed below, is licensed under [GPL version 2](http://www.gnu.org/licenses/gpl-2.0.html).
+
+* The Lime Technology logo file `plugins/webGui/images/logo.*` is property of Lime Technology and may
+not be used in any other project without written permission from Lime Technology.
+
+unRAID is a registered trademark of [Lime Technology](http://lime-technology.com).
+
+This file shall be included in all copies or substantial portions of the Software.
+
+**Other Contributers:**
+
+* Copyright 2012, Andrew Hamer-Adams. 
+
+* Copyright 2012, Bergware International.
+

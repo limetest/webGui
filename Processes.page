@@ -1,0 +1,3 @@
+Menu="Debug"
+Title="Processes"
+Type="plugins/webGui/scripts/pre ps -ef"

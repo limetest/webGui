@@ -1,0 +1,171 @@
+Icon="icons/networksettings.png"
+Menu="OtherSettings"
+Title="Network Settings"
+---
+<script type="text/javascript">
+function check_network_settings_form()
+{
+        var form = document.network_settings_form;
+	if (form.BONDING.value=="yes")
+	        form.BONDING_MODE.disabled=false;
+	else
+	        form.BONDING_MODE.disabled=true;
+	if (form.BRIDGING.value=="yes")
+	        form.BRNAME.disabled=false;
+	else
+	        form.BRNAME.disabled=true;
+	if (form.USE_DHCP.value=="yes") {
+		form.IPADDR.disabled=true;
+		form.NETMASK.disabled=true;
+		form.GATEWAY.disabled=true;
+		form.DHCP_KEEPRESOLV.disabled=false;
+		if (form.DHCP_KEEPRESOLV.value == "yes") {
+			form.DNS_SERVER1.disabled=false;
+			form.DNS_SERVER2.disabled=false;
+			form.DNS_SERVER3.disabled=false;
+		}
+		else {
+			form.DNS_SERVER1.disabled=true;
+			form.DNS_SERVER2.disabled=true;
+			form.DNS_SERVER3.disabled=true;
+		}
+	}
+	else {
+		form.IPADDR.disabled=false;
+		form.NETMASK.disabled=false;
+		form.GATEWAY.disabled=false;
+		form.DHCP_KEEPRESOLV.value = "yes";
+		form.DHCP_KEEPRESOLV.disabled=true;
+		form.DNS_SERVER1.disabled=false;
+		form.DNS_SERVER2.disabled=false;
+		form.DNS_SERVER3.disabled=false;
+	}
+}
+$(document).ready(check_network_settings_form);
+</script>
+<form markdown="1" name="network_settings_form" method="POST" action="/update.htm" target="progressFrame">
+
+MAC address:
+
+:   <?=$var['HWADDR'];?>&nbsp;
+
+Enable bonding:
+
+:   <select name="BONDING" size="1" onchange="check_network_settings_form();">
+    <?=mk_option($var['BONDING'], "no", "No");?>
+    <?=mk_option($var['BONDING'], "yes", "Yes");?>
+    </select>
+
+    > Bonding is a feature that lets you combine multiple physical Ethernet interfaces into a
+    > single *bond* interface named **bond0**.  This lets you connect
+    > any or all your ethernet ports to the same switch.
+
+    > At present this feature will bond all present ethernet interfaces.
+
+Bonding mode:
+
+:   <select name="BONDING_MODE" size="1">
+    <?=mk_option($var['BONDING_MODE'], "0", "balance-rr (0)");?>
+    <?=mk_option($var['BONDING_MODE'], "1", "active-backup (1)");?>
+    <?=mk_option($var['BONDING_MODE'], "2", "balance-xor (2)");?>
+    <?=mk_option($var['BONDING_MODE'], "3", "broadcast (3)");?>
+    <?=mk_option($var['BONDING_MODE'], "4", "802.3ad (4)");?>
+    <?=mk_option($var['BONDING_MODE'], "5", "balance-tlb (5)");?>
+    <?=mk_option($var['BONDING_MODE'], "6", "balance-alb (6)");?>
+    </select>
+
+    > Mode 1 (active-backup) is the recommended default.  Other modes may require switch support.
+
+Setup bridge:
+
+:   <select name="BRIDGING" size="1" onchange="check_network_settings_form();">
+    <?=mk_option($var['BRIDGING'], "no", "No");?>
+    <?=mk_option($var['BRIDGING'], "yes", "Yes");?>
+    </select>
+
+    > Bridging allows you to connect two or more network segments
+    > within one logical network.  At present this feature will bridge all
+    > present ethernet interfaces.
+
+    > **Caution:** if bonding is also not enabled, do not connect two or more
+    > ethernet ports to the same switch unless the switch supports STP
+    > (most consumer switches **do not**).
+    > Doing so will cause an "ARP broadcast storm" and can bring down your
+    > entire network (unplugging all sever ethernet ports except one
+    > typically will restore your network).
+
+    > If bonding is also enabled, the bridge will initially consist of
+    > just the **bond0** interface.  This is useful if you are setting up a bridge for Xen.
+
+Bridge name:
+
+:   <input type="text" name="BRNAME" maxlength="80" value="<?=$var['BRNAME'];?>">
+
+    > This is the name of the bridge interface.  If left blank, the name of the bridge will be **br0**.
+    > If running as a Xen dom0 we recommend setting this to **xenbr0**.
+
+Obtain IP Address Automatically:
+
+:   <select name="USE_DHCP" size="1" onchange="check_network_settings_form();">
+    <?=mk_option($var['USE_DHCP'], "yes", "Yes");?>
+    <?=mk_option($var['USE_DHCP'], "no", "No");?>
+    </select>
+
+    > If set to 'Yes' the server will attempt to obtain its IP address from the local DHCP server.
+
+IP Address:
+
+:   <input type="text" name="IPADDR" maxlength="40" value="<?=$var['IPADDR'];?>">
+
+    > Greyed out if using DHCP server.
+
+Netmask:
+
+:   <input type="text" name="NETMASK" maxlength="40" value="<?=$var['NETMASK'];?>">
+
+    > Greyed out if using DHCP server.
+
+Gateway:
+
+:   <input type="text" name="GATEWAY" maxlength="40" value="<?=$var['GATEWAY'];?>">
+
+    > Greyed out if using DHCP server.
+
+Obtain DNS Server Address Automatically:
+
+:   <select name="DHCP_KEEPRESOLV" size="1" onchange="check_network_settings_form();">
+    <?=mk_option($var['DHCP_KEEPRESOLV'], "yes", "No");?>
+    <?=mk_option($var['DHCP_KEEPRESOLV'], "no", "Yes");?>
+    </select>
+
+    > If set to 'Yes' the server will use DNS server IP address returned by the local DHCP server.<br>
+    > If set to 'No' you may enter your own list.  This is useful in Active Directory configruations where
+    > you need to set the first DNS Server entry to the IP address of your AD Domain server.
+
+DNS Server 1:
+
+:   <input type="text" name="DNS_SERVER1" maxlength="80" value="<?=$var['DNS_SERVER1'];?>">
+
+    > This is the primary DNS server to use.  Enter a FQDN or an IP address.
+    
+    > Note: for *Active Directory* you **must** ensure this is set to the IP address of your
+    > AD Domain server.
+
+DNS Server 2:
+
+:   <input type="text" name="DNS_SERVER2" maxlength="80" value="<?=$var['DNS_SERVER2'];?>">
+
+    > This is the DNS server to use if DNS Server 1 is down.
+
+DNS Server 3:
+
+:   <input type="text" name="DNS_SERVER3" maxlength="80" value="<?=$var['DNS_SERVER3'];?>">
+
+    > This is the DNS server to use if DNS Servers 1 and 2 are both down.
+
+&nbsp;
+
+:   <input type="submit" name="changeNetwork" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+</form>

@@ -1,0 +1,57 @@
+Icon="icons/sharesettings.png"
+Menu="ShareSettingsMenu:1"
+Title="Share Settings"
+---
+<script>
+function check_share_settings_form()
+{
+  form = document.share_settings_form;
+  enabled = (form.shareUser.value == "e");
+  form.shareUserInclude.disabled = !enabled;
+  form.shareUserExclude.disabled = !enabled;
+}
+$(document).ready(check_share_settings_form);
+</script>
+
+<form markdown="1" name="share_settings_form" method="POST" action="/update.htm" target="progressFrame">
+
+Enable User Shares:
+
+:   <select name="shareUser" size="1" onchange="check_share_settings_form();">
+    <?=mk_option($var['shareUser'], "e", "Yes");?>
+    <?=mk_option($var['shareUser'], "-", "No");?>
+    </select>
+
+    > If set to 'Yes' the User Shares feature is activated.
+
+Included disk(s):
+
+:   <input type="text" name="shareUserInclude" maxlength="256" value="<?=$var['shareUserInclude'];?>">
+
+    > This setting defines the set of array disks which are *included* in User Shares.
+
+    > Set this field to *blank* in order to allow **all** array disks to be included.
+
+    > To specify a set of disks name them like this:
+
+    > * disk1,disk2,disk3 *disk names seperated by commas*
+    > * disk1-3 *a range of disks*
+    > * disk2,disk4-6,disk10 *another example*
+
+Excluded disk(s):
+
+:   <input type="text" name="shareUserExclude" maxlength="256" value="<?=$var['shareUserExclude'];?>">
+
+    > This setting defines the set of array disk which are *excluded* from User Shares. Set this
+    > field to *blank* in order to not exclude any disks; otherwise, set this field as above to define the set
+    > of disks to exclude.
+
+    > **Note:** Each separate User Share also includes its own set of Included and Excluded disks which represent
+    > a subset of the Included/Excluded disks defined here.
+
+&nbsp;
+
+:   <input type="submit" name="changeShare" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+</form>

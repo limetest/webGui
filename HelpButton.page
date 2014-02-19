@@ -1,0 +1,10 @@
+Icon="icons/help.png"
+Menu="Buttons"
+Title="Help"
+---
+<script>
+function HelpButton() {
+  $(".inline_help").fadeToggle();
+  $(".HelpButton_button").toggleClass('nav_right_button_active');
+}
+</script>

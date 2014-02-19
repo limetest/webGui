@@ -1,0 +1,29 @@
+Icon="icons/ident.png"
+Menu="OtherSettings"
+Title="Identification"
+---
+<form markdown="1" name="NameSettings" method="POST" action="/update.htm" target="progressFrame">
+
+Server name:
+
+:   <input type="text" name="NAME" maxlength="15" value="<?=$var['NAME'];?>">
+
+    > The network identy of your server.  Also known as *hostname* or *short hostname*. Windows networking
+    > refers to this as the *netBIOS name* and must be 15 characters or less in length.
+
+    > Use only alphanumeric characters (that is, "A-Z", "a-z", and "0-9"), dashes ("-"), and dots (".");
+    > and, the first character must be alphanumeric.
+
+Description:
+
+:   <input type="text" name="COMMENT" value="<?=$var['COMMENT'];?>">
+
+    > This is a text field that is seen next to a server when listed within Network or Network Neighborhood 
+    > (Windows), or Finder (Mac OS X).
+
+&nbsp;
+
+:   <input type="submit" name="changeNames" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+</form>

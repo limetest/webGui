@@ -1,0 +1,51 @@
+Menu="Upgrade"
+Title="New Permissions"
+---
+<script>
+function run_newperms() {
+   var title="<?=$var[NAME];?> newperms";
+   var url="/logging.htm?title=" + title + "&cmd=/usr/local/sbin/newperms&forkCmd=Start";
+
+   var width    =((screen.width*2)/3)||0;
+   var height   =((screen.height*2)/3)||0;
+   var features ="resizeable=yes,scrollbars=yes,width=" + width + ",height=" + height;
+      
+    var myWindow=window.open(url, name.replace(/ /g, "_"), features);
+    myWindow.focus();
+}
+</script>
+This is a one-time action to be taken after upgrading from a pre-5.0 unRAID server
+release to version 5.0.  It is also useful for restoring default ownership/permissions on files and
+directories when transitioning back from Active Directory to non-Active Directory integration.
+
+This utility starts a background process that goes to each of your data disks and cache disk
+and changes file and directory ownership to nobody/users (i.e., uid/gid to 99/100), and sets permissions
+as follows:
+~~~
+For directories:
+  drwxrwxrwx
+
+For read/write files:
+  -rw-rw-rw-
+
+For readonly files:
+  -r--r--r--
+~~~
+Clicking Start will open another window and start the background process. Closing the window before
+completion will terminate the background process - so don't do that. This process can take a long time if you have many files.
+
+<form markdown="1" method="POST" action="/update.htm" target="progressFrame" onsubmit="run_newperms()">
+<? exec("pgrep newperms", $pids); ?>
+<? if (!empty($pids)) : ?>
+      <input type="submit" value="Start" disabled> Already running!
+<? else: ?>
+<?    if ($var['fsState']!="Started"): ?>
+         <input type="submit" value="Start" disabled> Array must be Started to change permissions.
+<?    else: ?>
+         <p class="Confirm">
+	 <input type="submit" name="submit_button" value="Start" disabled>
+	 <input type="checkbox" onClick="submit_button.disabled=!this.checked"><small>Yes I want to do this</small>
+	 </p>
+<?    endif; ?>
+<? endif; ?>
+</form>

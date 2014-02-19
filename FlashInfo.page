@@ -1,0 +1,43 @@
+Icon="icons/flash.png"
+Menu="Flash"
+Title="Flash Device Settings"
+---
+Flash Vendor:
+
+:   <?=$var['flashVendor'];?>&nbsp;
+
+Flash Product:
+
+:   <?=$var['flashProduct'];?>&nbsp;
+
+Flash GUID:
+
+:   <?=$var['flashGUID'];?>&nbsp;
+
+<? if ($var['regTy']=="Basic" && strlen($var['regGUID'])): ?>
+
+Registered GUID:
+
+:   <?=$var['regGUID'];?> <strong>Wrong</strong>
+
+<? endif; ?>
+
+Registered to:
+
+: <?=$var['regTo'];?>&nbsp;
+
+<? if ($var['regTy']=="Basic" && !strlen($var['regGUID'])): ?>
+
+&nbsp;
+
+:   [Upgrade to ***Plus*** or go ***Pro***](http://lime-technology.com/registration-keys?BasicGUID=<?=$var['flashGUID'];?>)
+
+<? endif; ?>
+
+<? if ($var['regTy']=="Plus"): ?>
+
+&nbsp;
+
+:   [Upgrade to ***Pro***](http://lime-technology.com/registration-keys?PlusGUID=<?=$var['flashGUID'];?>)
+
+<? endif; ?>

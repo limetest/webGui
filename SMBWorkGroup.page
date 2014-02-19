@@ -1,0 +1,29 @@
+Cond="($var['shareSMBEnabled']=='yes')"
+Icon="icons/windows-icon.png"
+Menu="SMB:20"
+Title="Workgroup Settings"
+---
+<form markdown="1" name="WorkGroup" method="POST" action="/update.htm" target="progressFrame">
+
+Workgroup:
+
+:   <input type="text" name="WORKGROUP" maxlength="40" value="<?=$var['WORKGROUP'];?>">
+   
+    > Enter your local network Workgroup name. Usually this is "WORKGROUP".
+
+Local master:
+
+:   <select name="localMaster">
+    <?=mk_option($var['localMaster'], "no", "No");?>
+    <?=mk_option($var['localMaster'], "yes", "Yes");?>
+    </select>
+
+    > If set to 'Yes' then the server will fully participate in browser elections, and in the absense
+    > of other servers, will usually become the local Master Browser.
+
+&nbsp;
+
+:   <input type="submit" name="changeShare" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+</form>

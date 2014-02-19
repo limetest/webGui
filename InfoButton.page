@@ -1,0 +1,15 @@
+Icon="icons/monitor.png"
+Menu="Buttons"
+Title="Info"
+---
+<script>
+function InfoButton() {
+  Shadowbox.open({
+    content:'/plugins/webGui/include/info_layout.php',
+    player:'iframe',
+    title:'System Information',
+    height:460,
+    width:420
+  });
+}
+</script>

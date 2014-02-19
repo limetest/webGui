@@ -1,0 +1,9 @@
+Menu="Tasks:1"
+Title="Main"
+Type="xmenu"
+Author="limetech"
+Version="r4"
+---
+> This is the *home* page of your unRAID Server. This page displays a summary of the vital information about the hard
+drives.  This page is also used to configure the role of each hard drive and initiate certain array operations.
+Scroll down for more information.

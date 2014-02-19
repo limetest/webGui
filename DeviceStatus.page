@@ -1,0 +1,156 @@
+Menu="Main:10"
+Title="Device Status"
+---
+<?
+$parity_help = <<<EOT
+An unRAID disk array consists of a single Parity disk and a number of Data disks. The Data
+disks are exclusively used to store user data, and the Parity disk provides the redundancy necessary
+to recover from any singe disk failure.  Since data is not striped across the array, the Parity
+disk must be as larger, or larger than the largest Data disk.  Parity should also be your highest
+performance drive.
+EOT;
+
+$disk_help = <<<EOT
+Data disks are used to store your data.  Each disk has it's own file system and can be exported as a
+separate share.  Click on the Disk name to configure individual Data disk settings.
+EOT;
+
+$cache_help = <<<EOT
+The Cache disk is a device *outside* the unRAID array.  It may be exported for network access just
+like the Array disks.  Being outside the unRAID array results in significantly faster write access
+at the cost of no data protection - if the Cache device fails all data contained on it may be lost.
+
+When [User Shares](/Settings/ShareSettingsMenu) are enabled, user shares may be configured to
+automatically make use of the Cache disk in order to
+speed up writes.  A special background process called the *mover* can be scheduled to run
+periodically to move user share files off the Cache disk and onto the Array.
+EOT;
+
+$totals_help = <<<EOT
+The **Total** line provides a tally of the array device statistics, including the average temperature
+of your hard drives.
+EOT;
+
+$unassigned_help = <<<EOT
+Unassigned disks, indicated by **+++**, are devices installed in your server but not assigned any role,
+and are not managed in any way by unRAID OS.
+EOT;
+
+$flash_help = <<<EOT
+Vital array configuration is maintained on the USB Flash device; for this reason, it must remain
+plugged in to your server.  Click on [Flash](/Main/Flash?name=flash) to see the GUID and registration
+information, and
+to configure export settings.  Since the USB Flash device is formatted using FAT file system, it
+may only be exported using SMB protocol.
+EOT;
+?>
+<?
+require_once "plugins/webGui/include/device_list.php";
+echo_table_device_begin();
+echo_row_device("parity");
+echo_row_help($parity_help);
+echo_row_device("disk");
+echo_row_help($disk_help);
+if (array_key_exists('cache',$disks)) {
+  echo_row_device("cache");
+  echo_row_help($cache_help);
+}
+if ($display['total'] && ($var['fsState'] != "Stopped")) {
+  echo_array_totals();
+  echo_row_help($totals_help);
+}
+if ($display['devices'] && ($var['fsState'] != "Stopped")) {
+  echo_row_unassigned_devices();
+  echo_row_help($unassigned_help);
+}
+echo_row_device("flash");
+echo_row_help($flash_help);
+echo_table_end();
+?>
+
+<? if ($var['fsState'] != "Stopped"): ?>
+> **Identification** is the *signature* that uniquely identifies a storage device. The signature
+> includes the device model number, serial number, linux device id, and the device size.
+
+> **Temp.** (temperature) is read directly from the drive.  You configure which units to use on
+> the [Display Preferences](Settings/Display) page.  We don't read the temperature of spun-down hard
+> drives since this typically causes them to spin up; instead we display an `*` symbol.  We also
+> display an `*` symbol for SSD and Flash devices, though sometimes `0` will be displayed for these
+> device types.
+
+> **Size, Used, Free** reports the total disk size, used space, and remaining space for files.  These
+> units are also configured on the [Display Preferences](Settings/Display) page.  The
+> amount of space used will be non-zero even for an empty disk due to file system overhead.
+
+> **Reads, Writes** are a count of I/O requests sent to the disk I/O drivers.  These statistics may
+> be cleared at any time, refer to the Array Status section below.
+
+> **Errors** counts the number of *unrecoverable* errors reported by the disk
+> I/O drivers. Missing data due to unrecoverable read errors is filled in on-the-fly using parity
+> reconstruct (and we attempt to write this data back to the sector(s) which failed). Any unrecoverable
+> write error results in *disabling* the disk.
+
+> **View** column contains a folder icon indicating the device is *mounted*. Click the icon to
+> browse the file system.
+
+> The Array must be Stopped in order to change Array device assignments.
+
+<? else: ?>
+
+> #### Assigning Devices
+>
+> An unRAID disk array consists of a single parity disk and a number of data disks. The data
+> disks are exclusively used to store user data, and the parity disk provides the redundancy necessary
+> to recover from any singe disk failure.
+> 
+> Note that we're careful to use the term *disk* when referring to an array storage device.  We
+> use the term *hard drive* (or sometimes just *drive*) when referring to an actual hard disk drive (HDD)
+> device. This is because in a RAID system it's possible to read/write an array disk whose corresponding
+> hard drive is disabled or even missing! In addition, it's useful to be able to ask, "which device is
+> assigned to be the parity disk?"; or, "which device corresponds to disk2?".
+> 
+> We therefore need a way to assign hard drives to array disks. This is accomplished here on the
+> Main page when the array is stopped. There is a drop-down box for each array disk which lists all the
+> unassigned devices. To assign a device simply select it from the list. Each time a device
+> assignment is made, the system updates a configuration file to record the assignment.
+> 
+> #### Requirements
+> 
+> Unlike traditional RAID systems which stripe data across all the array devices, an unRAID server
+> stores files on individual hard drives. Consequently, all file write operations will involve both the
+> data disk the file is being written to, and the parity disk. For these reasons,
+> 
+> * the parity disk size must be as large or larger than any of the data disks,
+> 
+> and
+> 
+> * given a choice, the parity disk should be the fastest disk in your collection.
+> 
+> #### Guidelines
+> 
+> Here are the steps you should follow when designing your unRAID disk array:
+> 
+> 1. Decide which hard drive you will use for parity, and which hard drives you will use for
+> data disk1, disk2, etc., and label them in some fashion. Also, find the serial number of each hard
+> drive and jot it down somewhere; you will need this information later.
+> 
+> 2. Install your hard drive devices, boot unRAID Server and bring up the webGui. If this is a fresh system
+> build, then the Main page will show no disks installed. This doesn't mean the system can't detect your
+> hard drives; it just means that none have been assigned yet.
+> 
+> 3. Remember the serial numbers you recored back in step 1? For parity and each data disk, select the
+> proper hard drive based on it's serial number from the drop down list.
+>
+> #### Hot Plug
+>
+> You may also *hot plug* hard drives into your server if your hardware supports it. For example,
+> if you are using hard drive cages, you may simply plug them into your server while powered on and
+> with array Stopped. Refresh the Main page to have new unassigned devices appear in the assignment
+> dropdown lists.
+> 
+> #### Next Steps
+>
+> Once you have assigned all of your hard drives, refer to the Array Status section below
+> and Start the array.
+
+<? endif ?>

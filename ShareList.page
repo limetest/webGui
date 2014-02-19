@@ -1,0 +1,4 @@
+Icon="icons/sharesettings.png"
+Menu="Shares"
+Title="User Shares"
+Type="php"

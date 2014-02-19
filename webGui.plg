@@ -1,0 +1,65 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "webGui">
+<!ENTITY version   "2014.02.14">
+<!ENTITY pluginURL "https://raw.github.com/limetech/webGui/archive/master.tar.gz">
+<!ENTITY checkURL  "https://raw.github.com/limetech/webGui/master/webGui.plg">
+<!ENTITY type      "system">
+<!ENTITY author    "LimeTech">
+]>
+
+<PLUGIN  name="&name;"
+         version="&version;"
+         pluginURL="&pluginURL;"
+         checkURL="&checkURL;"
+         type="&type;"
+         author="&author;">
+<!--
+get webGui from github as tarball
+-->
+<FILE Name="/boot/plugins/webGui-master.tar.gz">
+<URL>--no-check-certificate &pluginURL;</URL>
+</FILE>
+
+<!--
+The 'install' script.  Ordinarily last step of 'install' is to touch (create)
+a /var/log/plugins/<Name> file.  But since webGui is also "built-in", this file
+will already exist.
+-->
+<FILE Name="/tmp/plugin-tmp" Run="/bin/bash">
+<INLINE>
+# unzip new webGui
+tar -xf /boot/plugins/webGui-master.tar.gz -C /tmp
+# if running built-in webGui, set up a symlink
+if [ ! -L /usr/local/emhttp/plugins/webGui ]; then
+  mv /usr/local/emhttp/plugins/webGui /usr/local/emhttp/plugins/webGui-orig
+  ln -s /tmp/webGui-master /usr/local/emhttp/plugins/webGui
+fi
+# make sure our config directory exists
+mkdir -p /boot/config/plugins/webGui
+# Remove this script
+rm -f /tmp/plugin-tmp
+</INLINE>
+</FILE>
+
+<!--
+The 'remove' script.  Ordinarily last step of 'remove' is to delete
+the /var/log/plugins/<Name> file.  But since webGui is also "built-in", this
+file should not be deleted.
+-->
+<FILE Name="/tmp/plugin-tmp" Run="/bin/bash" Method="remove">
+<INLINE>
+if [ -L /usr/local/emhttp/plugins/webGui ]; then
+  rm /usr/local/emhttp/plugins/webGui
+  rm -r /tmp/webGui-master
+  mv /usr/local/emhttp/plugins/webGui-orig /usr/local/emhttp/plugins/webGui
+fi
+rm /boot/plugins/webGui.plg
+rm /boot/plugins/webGui-master.tar.gz
+# Remove this script
+rm -f /tmp/plugin-tmp
+</INLINE>
+</FILE>
+
+</PLUGIN>

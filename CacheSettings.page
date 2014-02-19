@@ -1,0 +1,42 @@
+Cond="(($var['shareUser']!='-')&&(array_key_exists( 'cache', $disks))&&($disks['cache']['status']!='DISK_NP'))"
+Icon="icons/cache.png"
+Menu="ShareSettingsMenu:2"
+Title="Cache Settings"
+---
+<script>
+function check_cache_settings_form()
+{
+  form = document.cache_settings_form;
+  enabled = (form.shareCacheEnabled.value == "yes");
+  form.shareCacheFloor.disabled = !enabled;
+}
+$(document).ready(check_cache_settings_form);
+</script>
+<form markdown="1" name="cache_settings_form" method="POST" action="/update.htm" target="progressFrame">
+
+Use cache disk:
+
+:   <select name="shareCacheEnabled" size="1" onchange="check_cache_settings_form();">
+    <?=mk_option($var['shareCacheEnabled'], "yes", "Yes");?>
+    <?=mk_option($var['shareCacheEnabled'], "no", "No");?>
+    </select>
+
+    > If set to 'Yes' then User Shares can possibly make use of the Cache Disk.  You still need to enable
+    > use of the Cache Disk on individual user shares.
+
+Min. free space:
+
+:   <input type="text" name="shareCacheFloor" maxlength="16" value="<?=$var['shareCacheFloor'];?>">
+
+    > This represents a "floor" of the amount of free space remaining on the cache disk.  If the free
+    > space becomes less than this value, then new files written to user shares with cache enabled will go to
+    > the array and not the cache disk.
+
+    > Enter a numeric value with one of these suffixes: KB, MB, GB, TB.  If no suffix, GB is assumed.
+
+&nbsp;
+
+:   <input type="submit" name="changeShare" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+</form>

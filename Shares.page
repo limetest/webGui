@@ -1,0 +1,4 @@
+Cond="($var['shareUser']=='e')"
+Menu="Tasks:2"
+Title="Shares"
+Type="xmenu"

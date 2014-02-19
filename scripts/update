@@ -1,0 +1,44 @@
+#!/bin/bash
+# Fetch the webGui release from github master branch.
+URL="https://raw.github.com/limetech/webGui/master/webGui.plg"
+
+check() {
+  if ! wget --quiet --no-check-certificate $URL -O /tmp/webGui.plg ; then
+    exit 1
+  fi
+  echo `grep "ENTITY version" /tmp/webGui.plg | cut -d'"' -f2`
+}
+
+remove() {
+  rm /var/log/plugins/webGui &> /dev/null
+  rm /boot/plugins/webGui.plg &> /dev/null
+  rm /boot/plugins/webGui.tar.gz &> /dev/null
+}
+
+install() {
+  if ! wget --quiet --no-check-certificate $URL -O /tmp/webGui.plg ; then
+    exit 1
+  fi
+  mkdir -p /boot/plugins
+  remove
+  mv /tmp/webGui.plg /boot/plugins
+  if ! installplg /boot/plugins/webGui.plg ; then
+    remove
+    exit 2
+  fi
+}
+
+case "$1" in
+'check') # "check" outputs latest version to sdtout
+  check
+  ;;
+'remove') # "remove" removes the plugin
+  remove
+  ;;
+'install') # "install" downloads plugin and installs it
+  install
+  ;;
+*) # the default is to "install"
+  install
+esac
+exit 0

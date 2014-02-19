@@ -1,0 +1,28 @@
+Menu="Debug"
+Title="Page Map"
+---
+<?
+function show_map( $menu, $level) {
+  $pages = find_pages( $menu);
+  if (empty($pages))
+    return;
+  echo "<ul>";
+  foreach ($pages as $page) {
+    $link="<a href='/{$page['name']}'>{$page['name']}</a>";
+    if ($page['Type'] == "menu") {
+      echo "{$level} ({$link}) - {$page['Title']}<br>";
+    }
+    else if ($page['Type'] == "xmenu") {
+      echo "{$level} [{$link}] - {$page['Title']}<br>";
+    }
+    else {
+      echo "{$level} {$link} - {$page['Title']}<br>";
+    }
+    show_map( $page['name'], $level+1);
+  }
+  echo "</ul>";
+}
+
+show_map( "Tasks", 1);
+show_map( "Buttons", 1);
+?>

@@ -1,0 +1,40 @@
+Icon="icons/user.png"
+Menu="UserList"
+Title="Add User"
+---
+<form markdown="1" method="POST" action="/update.htm" target="progressFrame">
+
+User name:
+
+:   <input type="text" name="userName" maxlength="40">
+
+    > Usernames may be up to 32 characters long and must start with a **lower case letter** or an underscore,
+    > followed by **lower case letters**, digits, underscores, or dashes. They can end with a dollar sign.
+    
+    > In regular expression terms: `[a-z_][a-z0-9_-]*[$]?`
+  
+Description:
+
+:   <input type="text" name="userDesc" maxlength="64">
+
+    > Up to 64 characters.
+
+Password:
+
+:   <input type="password" name="userPassword" maxlength="40"
+    onKeyUp="this.form.cmdUserEdit.disabled = (this.form.userPassword.value != this.form.userPasswordConf.value);">
+
+    > Up to 40 characters.
+
+Retype password:
+
+:   <input type="password" name="userPasswordConf" maxlength="40"
+    onKeyUp="this.form.cmdUserEdit.disabled = (this.form.userPassword.value != this.form.userPasswordConf.value);">
+
+&nbsp;
+
+:   <input type="submit" name="cmdUserEdit" value="Add">
+    <button type="button" onClick="done();">Done</button>
+
+</form>
+

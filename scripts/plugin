@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Remove needs more work: to restore system to state without plugin is almost always going
+# to require a reboot.  In addition there may be a /boot/config/plugins/<plugin-name> directory
+# that we want to remove as well; but this cleanup probably should be done during the reboot.
+
+# What we really need is something in the plg file that tells us how to handle operations:
+# for Install - what pre-condition, if any, should exist, e.g., "array must be stopped", or
+# "must be installed upon reboot only", etc.
+# for Remove - maybe a script that does the remove, or "remove upon reboot", etc.
+# for Update - similar to Install.
+
+#        $1         $2  $3   $4
+# plugin Download  name file url
+# plugin Remove    name file
+# plugin Install   name file
+# plugin Uninstall name file
+# plugin Update    name file url
+
+plugins="/boot/config/plugins"
+logging="/var/log/plugins"
+
+case "$1" in
+'Download')
+  echo "Downloading $2 ($4)"
+  wget --no-check-certificate -O - "$4" > "$plugins/$3"
+  ;;
+'Remove')
+  echo "Removing $2 ($3)"
+  rm "$plugins/$3"
+  ;;
+'Install')
+  echo "Installing $2 ($3)"
+  /usr/local/sbin/installplg "$plugins/$3" && touch "$logging/$2"
+  ;;
+'Uninstall')
+  echo "Uninstalling $2 ($3)"
+  rm "$plugins/$3"
+  ;;
+'Update')
+  echo "Updating $2 ($4)"
+  rm "$plugins/$3" && rm "$logging/$2"
+  wget --no-check-certificate -O - "$4" > "$plugins/$3"
+  /usr/local/sbin/installplg "$plugins/$3"
+ ;;
+*)
+  echo "look at source for usage"
+esac

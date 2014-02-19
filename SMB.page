@@ -1,0 +1,4 @@
+Icon="icons/windows-icon.png"
+Menu="NetworkServices"
+Title="SMB"
+Type="xmenu"

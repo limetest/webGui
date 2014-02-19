@@ -1,0 +1,21 @@
+Menu="Upgrade"
+Title="New Config"
+---
+This is a utility to reset the array disk configuration so that all disks appear as "New" disks, as
+if it were a fresh new server.
+
+This is useful when you have added or removed multiple drives and wish to rebuild parity based on
+the new configuration.
+
+**DO NOT USE THIS UTILITY THINKING IT WILL REBUILD A FAILED DRIVE** - it will have the opposite
+effect of making it ***impossible*** to rebuild an existing failed drive - you have been warned!
+
+<form markdown="1" name="newConfig" method="POST" action="/update.htm" target="progressFrame">
+
+<? if ($var['fsState']=="Started"): ?>
+      <input type="submit" name="cmdInit" value="Apply" disabled>Array must be Stopped
+<? else: ?>
+      <p class="Confirm"><input type="submit" name="cmdInit" value="Apply" disabled><input type="checkbox"
+      onClick="cmdInit.disabled=!this.checked"><small>Yes I want to do this</small></p>
+<? endif; ?>
+</form>

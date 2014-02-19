@@ -1,0 +1,11 @@
+Menu="Debug"
+Title="Vars"
+---
+<?
+ksort($page_array);
+foreach ($page_array as &$page)
+  unset($page[text]);
+  
+ksort($GLOBALS);
+?>
+<pre>$GLOBALS = <?=print_r($GLOBALS);?></pre>

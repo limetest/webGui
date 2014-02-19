@@ -1,0 +1,60 @@
+Icon="icons/user.png"
+Menu="UserList"
+Title="User '$name' Settings"
+---
+<?
+/* handle user deleted */
+if (!array_key_exists( $name, $users)) {
+  echo "<p class='notice'>User $name has been deleted.</p>";
+  echo "<p class='notice'><button type='button' onClick='done();'>OK</button></p>";
+  return;
+}
+$user = $users[$name];
+?>
+<form markdown="1" method="POST" action="/update.htm" target="progressFrame">
+
+Description:
+
+:   <input type="text" name="userDesc" maxlength="64" value="<?=$user['desc'];?>">
+
+<? if ($user['name']=="root"): ?>
+
+&nbsp;
+
+:   <input type="hidden" name="userName" value="<?=$user['name'];?>">
+    <input type="submit" name="cmdUserEdit" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+<? else: ?>
+
+Delete<input type="checkbox" name="confirmDelete" onChange="chkDelete(this.form, this.form.cmdUserEdit);">
+
+:   <input type="hidden" name="userName" value="<?=$user['name'];?>">
+    <input type="submit" name="cmdUserEdit" value="Apply">
+    <button type="button" onClick="done();">Done</button>
+
+<? endif; ?>
+
+</form>
+      
+<hr>
+      
+<form markdown="1" method="POST" action="/update.htm" target="progressFrame">
+
+Password:
+
+:   <input type="password" name="userPassword" maxlength="40"
+    onKeyUp="this.form.cmdUserEdit.disabled = (this.form.userPassword.value != this.form.userPasswordConf.value);">
+
+Retype password:
+
+:   <input type="password" name="userPasswordConf" maxlength="40"
+    onKeyUp="this.form.cmdUserEdit.disabled = (this.form.userPassword.value != this.form.userPasswordConf.value);">
+
+&nbsp;
+
+:   <input type="hidden" name="userName" value="<?=$user['name'];?>">
+    <input type="submit" name="cmdUserEdit" value="Change">
+    <button type="button" onClick="done();">Done</button>
+
+</form>

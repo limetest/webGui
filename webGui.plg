@@ -3,9 +3,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "webGui">
 <!ENTITY author    "LimeTech">
-<!ENTITY version   "2014.02.14">
-<!ENTITY pluginURL "https://raw.github.com/limetest/webGui/master/webGui.plg">
-<!ENTITY masterURL "https://github.com/limetest/webGui/archive/master.tar.gz">
+<!ENTITY version   "2014.02.22">
+<!ENTITY pluginURL "https://raw.github.com/limetest/&name;/master/&name;.plg">
 ]>
 
 <PLUGIN  name="&name;"
@@ -15,46 +14,36 @@
 <!--
 get webGui from github as tarball
 -->
-<FILE Name="/boot/config/plugins/webGui-master.tar.gz">
-<URL>--no-check-certificate &masterURL;</URL>
+<FILE Name="/boot/config/plugins/&name;/&name;-&version;.tar.gz">
+<URL>"https://github.com/limetest/&name;/archive/&version;.tar.gz"</URL>
 </FILE>
 
 <!--
-The 'install' script.  The "built-in" webGui is going to have this link:
-  /var/log/plugins/webGui.plg -> /usr/local/emhttp/plugins/webGui/webGui.plg
-So we remove the link here, and the last step of "plugin install" will
-be to generate the link:
-  /var/log/plugins/webGui-master.tar.gz /boot/config/plugins/webGui-master.tar.gz
-We will "undo" this in the 'remove' script below.
+The 'install' script.
 -->
-<FILE Name="/tmp/plugin-tmp" Run="/bin/bash">
+<FILE Name="/tmp/plugins/tmp" Run="/bin/bash">
 <INLINE>
-# unzip new webGui
-tar -xf /boot/config/plugins/webGui-master.tar.gz -C /tmp
-# if running built-in webGui, set up a symlink
-if [ ! -L /usr/local/emhttp/plugins/webGui ]; then
-  mv /usr/local/emhttp/plugins/webGui /tmp/webGui-orig
-  ln -s /tmp/webGui-master /usr/local/emhttp/plugins/webGui
-  rm /var/log/plugins/webGui.plg
+if [ ! -d /tmp/plugins/builtin/&name; ]; then
+  mkdir -p /tmp/plugins/builtin
+  mv /usr/local/emhttp/plugins/&name; /tmp/plugins/builtin
+else
+  rm -r /usr/local/emhttp/plugins/&name;
 fi
-# Remove this script
-rm -f /tmp/plugin-tmp
+tar -xf /boot/config/plugins/&name;/&name;-&version;.tar.gz -C /usr/local/emhttp/plugins
+mv /usr/local/emhttp/plugins/&name;-&version;
+/usr/local/emhttp/plugins/&name;
 </INLINE>
 </FILE>
 
 <!--
 The 'remove' script.
 -->
-<FILE Name="/tmp/plugin-tmp" Run="/bin/bash" Method="remove">
+<FILE Name="/tmp/plugins/tmp" Run="/bin/bash" Method="remove">
 <INLINE>
-if [ -L /usr/local/emhttp/plugins/webGui ]; then
-  rm /usr/local/emhttp/plugins/webGui
-  rm -r /tmp/webGui-master
-  mv /tmp/webGui-orig /usr/local/emhttp/plugins/webGui
-  ln -s /usr/local/emhttp/plugins/webGui/webGui.plg /var/log/plugins/webGui.plg
-fi
-# Remove this script
-rm -f /tmp/plugin-tmp
+if [ -d /tmp/plugins/builtin/&name; ]; then
+  rm -r /usr/local/emhttp/plugins/&name;
+  mv /tmp/plugins/builtin/&name; /usr/local/emhttp/plugins
+fi;
 </INLINE>
 </FILE>
 

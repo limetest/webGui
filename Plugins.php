@@ -69,10 +69,9 @@ echo "<table class='tablesorter' id='plugin_table'><thead>";
 echo "<tr><th>X</th><th>Plugin</th><th>Current Version</th><th>Latest Version</th><th>Y</th></tr>";
 echo "</thead><tbody>";
 
-$plugins = array_diff(scandir("/var/log/plugins"), array('.', '..'));
-foreach ($plugins as $name) {
-  // the entries are links to plugin files
-  $plugin_file = readlink("/var/log/plugins/$name");
+foreach (glob( "plugins/*/*.plg", GLOB_NOSORT) as $plugin_file) {
+  // get the plugin name
+  $name = exec("plugin name $plugin_file");
 
   // get the "current version"
   $version = exec("plugin version $plugin_file");
@@ -82,18 +81,18 @@ foreach ($plugins as $name) {
   $action = "";
 
   // get the "latest version" and maybe offer a 'check' action
-  $latest = exec("plugin check $plugin_file");
-  if ($latest == "") {
-    $latest = make_link("check", $plugin_file);
-  }
-  else {
+  if (file_exists("/tmp/plugin/$plugin_file")) {
+    $latest = exec("plugin version /tmp/plugin/$plugin_file");
     // maybe offer 'update' action
     if (strcmp($latest, $version) > 0) {
       $action = make_link("update", $plugin_file);
       $action .= " | ";
     }
   }
-
+  else {
+    $latest = make_link("check", $plugin_file);
+  }
+      
   // offer 'remove' action
   $action .= make_link("remove", $plugin_file);
     

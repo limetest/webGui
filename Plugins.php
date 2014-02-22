@@ -69,24 +69,35 @@ echo "<table class='tablesorter' id='plugin_table'><thead>";
 echo "<tr><th>X</th><th>Plugin</th><th>Current Version</th><th>Latest Version</th><th>Y</th></tr>";
 echo "</thead><tbody>";
 
-foreach (glob( "plugins/*/*.plg", GLOB_NOSORT) as $plugin_file) {
+foreach (glob( "/var/log/plugins/*.plg", GLOB_NOSORT) as $entry) {
+  $plugin_file = readlink($entry);
+  if ($plugin_file === FALSE)
+    continue;
+
   // get the plugin name
   $name = exec("plugin name $plugin_file");
+  if ($name === FALSE)
+    $name = basename($plugin_file, ".plg");
 
   // get the "current version"
   $version = exec("plugin version $plugin_file");
-  if ($version == "")
+  if ($version == FALSE)
     $version = "unknown";
 
   $action = "";
 
   // get the "latest version" and maybe offer a 'check' action
-  if (file_exists("/tmp/plugin/$plugin_file")) {
-    $latest = exec("plugin version /tmp/plugin/$plugin_file");
-    // maybe offer 'update' action
-    if (strcmp($latest, $version) > 0) {
+  if (file_exists("/tmp/plugin/".basename("$plugin_file")) {
+    $latest = exec("plugin version /tmp/plugin/".basename("$plugin_file"));
+    if ($lastest === FALSE) {
+        $latest = "unknown";
+    }
+    else if (strcmp($latest, $version) > 0) {
       $action = make_link("update", $plugin_file);
       $action .= " | ";
+    }
+    else {
+      $latest = "up-to-date";
     }
   }
   else {
@@ -94,7 +105,8 @@ foreach (glob( "plugins/*/*.plg", GLOB_NOSORT) as $plugin_file) {
   }
       
   // offer 'remove' action
-  $action .= make_link("remove", $plugin_file);
+  if (!strstr("/usr/local/emhttp/plugins/", $plugin_file))
+    $action .= make_link("remove", $plugin_file);
     
   echo "<tr><td>1</td><td>{$name}</td><td>{$version}</td><td>{$latest}</td><td>{$action}</td></tr>";
 }

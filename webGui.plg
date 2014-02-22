@@ -30,8 +30,7 @@ else
   rm -r /usr/local/emhttp/plugins/&name;
 fi
 tar -xf /boot/config/plugins/&name;/&name;-&version;.tar.gz -C /usr/local/emhttp/plugins
-mv /usr/local/emhttp/plugins/&name;-&version;
-/usr/local/emhttp/plugins/&name;
+mv /usr/local/emhttp/plugins/&name;-&version; /usr/local/emhttp/plugins/&name;
 </INLINE>
 </FILE>
 
@@ -43,6 +42,7 @@ The 'remove' script.
 if [ -d /tmp/plugins/builtin/&name; ]; then
   rm -r /usr/local/emhttp/plugins/&name;
   mv /tmp/plugins/builtin/&name; /usr/local/emhttp/plugins
+  ln -s /usr/local/emhttp/plugins/&name;/&name;.plg /var/log/plugins
 fi;
 </INLINE>
 </FILE>

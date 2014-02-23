@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "webGui">
 <!ENTITY author    "LimeTech">
-<!ENTITY version   "2014.02.22f">
+<!ENTITY version   "2014.02.22g">
 <!ENTITY pluginURL "https://raw.github.com/limetest/&name;/master/&name;.plg">
 ]>
 
@@ -12,7 +12,7 @@
          version="&version;"
          pluginURL="&pluginURL;">
 <!--
-get webGui from github as tarball
+get from github as tarball
 -->
 <FILE Name="/boot/config/plugins/&name;/&name;-&version;.tar.gz">
 <URL>"https://github.com/limetest/&name;/archive/&version;.tar.gz"</URL>

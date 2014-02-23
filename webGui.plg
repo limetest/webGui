@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "webGui">
 <!ENTITY author    "LimeTech">
-<!ENTITY version   "2014.02.2c">
+<!ENTITY version   "2014.02.22d">
 <!ENTITY pluginURL "https://raw.github.com/limetest/&name;/master/&name;.plg">
 ]>
 

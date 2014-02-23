@@ -58,7 +58,7 @@ function make_link($method, $plugin_file) {
 }
 
 echo "<table class='tablesorter' id='plugin_table'><thead>";
-echo "<tr><th>Plugin</th><th>Plugin</th><th>Author</th><th>Current Version</th><th>Latest Version</th><th>Y</th></tr>";
+echo "<tr><th>File</th><th>Plugin</th><th>Author</th><th>Current Version</th><th>Latest Version</th><th>Y</th></tr>";
 echo "</thead><tbody>";
 
 foreach (glob("/var/log/plugins/*.plg", GLOB_NOSORT) as $entry) {

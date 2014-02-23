@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "webGui">
 <!ENTITY author    "LimeTech">
-<!ENTITY version   "2014.02.22d">
+<!ENTITY version   "2014.02.22e">
 <!ENTITY pluginURL "https://raw.github.com/limetest/&name;/master/&name;.plg">
 ]>
 
@@ -42,7 +42,7 @@ The 'remove' script.
 if [ -d /tmp/plugins/builtin/&name; ]; then
   rm -r /usr/local/emhttp/plugins/&name;
   mv /tmp/plugins/builtin/&name; /usr/local/emhttp/plugins
-  ln -s /usr/local/emhttp/plugins/&name;/&name;.plg /var/log/plugins
+  ln -sf /usr/local/emhttp/plugins/&name;/&name;.plg /var/log/plugins
 fi;
 </INLINE>
 </FILE>

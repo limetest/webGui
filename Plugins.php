@@ -61,7 +61,7 @@ function noticeUninstall() {
 <?PHP
 
 function make_link($method, $plugin_file) {
-  $cmd = "plugin $method $plugin_file";
+  $cmd = urlencode("/usr/local/sbin/plugin $method $plugin_file");
   return "<a href='/update.htm?cmd=$cmd&forkCmd=Start' target='progressFrame'>$method</a>";
 }
 
@@ -75,12 +75,12 @@ foreach (glob("/var/log/plugins/*.plg", GLOB_NOSORT) as $entry) {
     continue;
 
   // get the plugin name
-  $name = exec("plugin name $plugin_file");
+  $name = exec("/usr/local/sbin/plugin name $plugin_file");
   if ($name === FALSE)
     $name = basename($plugin_file, ".plg");
 
   // get the "current version"
-  $version = exec("plugin version $plugin_file");
+  $version = exec("/usr/local/sbin/plugin version $plugin_file");
   if ($version == FALSE)
     $version = "unknown";
 
@@ -88,7 +88,7 @@ foreach (glob("/var/log/plugins/*.plg", GLOB_NOSORT) as $entry) {
 
   // get the "latest version" and maybe offer a 'check' action
   if (file_exists("/tmp/plugins/".basename($plugin_file))) {
-    $latest = exec("plugin version /tmp/plugins/".basename($plugin_file));
+    $latest = exec("/usr/local/sbin/plugin version /tmp/plugins/".basename($plugin_file));
     if ($lastest === FALSE) {
         $latest = "unknown";
     }
@@ -102,7 +102,7 @@ foreach (glob("/var/log/plugins/*.plg", GLOB_NOSORT) as $entry) {
   }
       
   // offer 'remove' action
-  if (!strstr($plugin_file, "/usr/local/emhttp/plugins/"))
+  if (strstr($plugin_file, "/usr/local/emhttp/plugins/"))
     $action .= make_link("remove", $plugin_file);
     
   echo "<tr><td>{$plugin_file}</td><td>{$name}</td><td>{$version}</td><td>{$latest}</td><td>{$action}</td></tr>";

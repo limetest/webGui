@@ -67,7 +67,7 @@ foreach (glob("/var/log/plugins/*.plg", GLOB_NOSORT) as $entry) {
     continue;
 
   // plugin
-  if (strpos($plugin_file, "/usr/local/emhttp/plugins/"))
+  if (strpos($plugin_file, "/usr/local/emhttp/plugins/") === 0)
     $plugin = "built-in";
   else
     $plugin = basename($plugin_file);
